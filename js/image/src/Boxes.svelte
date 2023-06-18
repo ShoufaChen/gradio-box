@@ -8,6 +8,7 @@
 	export let width = 400;
 	export let height = 200;
 	export let containerHeight = 200;
+	export let value_img: any;
 
 	let mounted: boolean = false;
 	let boxes: Array<Array<number>> = [];
@@ -184,6 +185,7 @@
 				throw Error(`invalid box: ${box}`);
 			}
 			ctx?.rect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
+			ctx?.drawImage(value_img, 0, 0, width, height);
 		});
 		ctx.stroke();
 	};

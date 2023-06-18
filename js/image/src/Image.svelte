@@ -297,6 +297,9 @@
 						width={img_width || max_width}
 						height={img_height || max_height}
 						containerHeight={container_height || max_height}
+						{value_img}
+						{source}
+						{shape}
 					/>
 					<ModifySketch
 						on:undo={() => boxes.undo()}
@@ -430,6 +433,8 @@
 				width={img_width || max_width}
 				height={img_height || max_height}
 				containerHeight={container_height || max_height}
+				{value_img}
+				{source}
 			/>
 			<ModifySketch
 				on:undo={() => boxes.undo()}
