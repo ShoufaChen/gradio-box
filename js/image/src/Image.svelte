@@ -6,6 +6,7 @@
 	import type { SelectData } from "@gradio/utils";
 	import { get_coordinates_of_clicked_image } from "./utils";
 
+	import Boxes from "./Boxes.svelte";
 	import Cropper from "./Cropper.svelte";
 	import Sketch from "./Sketch.svelte";
 	import Webcam from "./Webcam.svelte";
@@ -17,7 +18,8 @@
 	export let value:
 		| null
 		| string
-		| { image: string | null; mask: string | null };
+		| { image: string | null; mask: string | null }
+		| { image: string | null; boxes: Array<Array<number>> | null };
 	export let label: string | undefined = undefined;
 	export let show_label: boolean;
 
@@ -32,6 +34,7 @@
 
 	let sketch: Sketch;
 	let cropper: Cropper;
+	let boxes: Boxes;
 
 	if (
 		value &&
@@ -83,6 +86,15 @@
 
 		await tick();
 
+		dispatch(streaming ? "stream" : "edit");
+	}
+
+	async function handle_box_save({ detail }: { detail: number[][4] }) {
+		value = {
+			image: typeof value === "string" ? value : value?.image || null,
+			boxes: detail
+		};
+		await tick();
 		dispatch(streaming ? "stream" : "edit");
 	}
 
@@ -266,6 +278,31 @@
 						/>
 					{/if}
 				{/if}
+			{:else if tool === "boxes" && (value !== null || static_image)}
+				{#key static_image}
+					<img
+						bind:this={value_img}
+						class="absolute-img"
+						src={static_image || value?.image || value}
+						alt=""
+						on:load={handle_image_load}
+						class:webcam={source === "webcam" && mirror_webcam}
+					/>
+				{/key}
+				{#if img_width > 0}
+					<Boxes
+						{value}
+						bind:this={boxes}
+						on:change={handle_box_save}
+						width={img_width || max_width}
+						height={img_height || max_height}
+						containerHeight={container_height || max_height}
+					/>
+					<ModifySketch
+						on:undo={() => boxes.undo()}
+						on:clear={() => boxes.clear()}
+					/>
+				{/if}
 			{:else}
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<img
@@ -373,6 +410,31 @@
 					{mode}
 				/>
 			{/if}
+		{/if}
+	{:else if tool === "boxes" && (value !== null || static_image)}
+		{#key static_image}
+			<img
+				bind:this={value_img}
+				class="absolute-img"
+				src={static_image || value?.image || value}
+				alt=""
+				on:load={handle_image_load}
+				class:webcam={source === "webcam" && mirror_webcam}
+			/>
+		{/key}
+		{#if img_width > 0}
+			<Boxes
+				{value}
+				bind:this={boxes}
+				on:change={handle_box_save}
+				width={img_width || max_width}
+				height={img_height || max_height}
+				containerHeight={container_height || max_height}
+			/>
+			<ModifySketch
+				on:undo={() => boxes.undo()}
+				on:clear={() => boxes.clear()}
+			/>
 		{/if}
 	{:else}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->

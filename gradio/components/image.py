@@ -224,7 +224,7 @@ class Image(
             )
 
     def preprocess(
-        self, x: str | dict[str, str]
+        self, x: str | dict[str, str] | dict[str, str | list[list[float]]]
     ) -> np.ndarray | _Image.Image | str | dict | None:
         """
         Parameters:
@@ -239,6 +239,13 @@ class Image(
         if self.tool == "sketch" and self.source in ["upload", "webcam"]:
             assert isinstance(x, dict)
             x, mask = x["image"], x["mask"]
+        
+        boxes = []
+        if self.tool == "boxes" and self.source in ["upload", "webcam"]:
+            assert isinstance(x, dict)
+            assert isinstance(x['image'], str)
+            assert isinstance(x['boxes'], list)
+            x, boxes = x["image"], x["boxes"]
 
         assert isinstance(x, str)
         im = processing_utils.decode_base64_to_image(x)
@@ -262,6 +269,9 @@ class Image(
                 "image": self._format_image(im),
                 "mask": self._format_image(mask_im),
             }
+        
+        if self.tool == "boxes" and self.source in ["upload", "webcam"]:
+            return {"image": self._format_image(im), "boxes": boxes}
 
         return self._format_image(im)
 
