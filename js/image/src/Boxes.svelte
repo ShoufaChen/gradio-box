@@ -150,6 +150,8 @@
 			drawCanvas();
 			mouseMoved = false;
 			boxesChanged = false;
+		} else{
+			drawCanvas();
 		}
 		if (!once) {
 			window.requestAnimationFrame(() => {
@@ -187,6 +189,7 @@
 			ctx?.rect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
 			ctx?.drawImage(value_img, 0, 0, width, height);
 		});
+		ctx?.drawImage(value_img, 0, 0, width, height);
 		ctx.stroke();
 	};
 
