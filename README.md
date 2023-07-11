@@ -3,7 +3,7 @@
 
 # Gradio Box
 
-This is the advanced gradio used in our paper, [](). which 
+This is the advanced gradio used in our paper, [GPT4RoI: Instruction Tuning Large Language Model on Region-of-Interest](https://arxiv.org/abs/2307.03601). 
 This is an extension to official [gradio](https://gradio.app/), which supports drawing boxes on top of an image.
 This feature is requested in https://github.com/gradio-app/gradio/issues/2316.
 
@@ -91,3 +91,4 @@ Use pip version >= 23.0.1
 
 Our implementation is mainly inspired by https://github.com/gradio-app/gradio/pull/3220, with several modifications for latest gradio.
 Greate thanks to [CtrlAltDeplete](https://github.com/CtrlAltDeplete).
+
